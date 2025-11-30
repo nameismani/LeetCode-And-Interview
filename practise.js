@@ -1,5 +1,7 @@
 
 
+// https://chatgpt.com/share/692be4d0-e974-8005-bd40-88688d0ad483
+
 let otpGen = (limit)=>{
     let digits = '0123456789';
     let result = "";
@@ -87,31 +89,66 @@ goldDistribution([10, 1000, 2, 1]) ➞ [12, 1001]
 
 goldDistribution([10, 9, 1, 2, 8, 4]) ➞ [16, 18]
 
-let goldDistribution = (array)=>{
-    let Mubashir = 0;
-    let Matt = 0;
-    
-while(array.length){
-    Mubashir += array.pop() ;
-    Matt += array.shift()
-}
-return [ Mubashir,Matt]
-}
+
+const goldDistribution = (arr) => {
+  let mubashir = 0;
+  let matt = 0;
+  let mubashirTurn = true;
+
+  while (arr.length) {
+    let pick;
+    if (arr[0] >= arr[arr.length - 1]) {
+      pick = arr.shift(); // remove first
+    } else {
+      pick = arr.pop();   // remove last
+    }
+
+    if (mubashirTurn) {
+      mubashir += pick;
+    } else {
+      matt += pick;
+    }
+
+    mubashirTurn = !mubashirTurn; // switch turns
+  }
+
+  return [mubashir, matt];
+};
+
+console.log(goldDistribution([7, 4, 2, 9, 5, 2])); // ➞ [14, 15]
+
 
 console.log(goldDistribution([4, 2, 9, 5, 2, 7])  )
 
-let unRepeatedString = (string)=>{
-     let result =""
-    for(let i=0;i<string.length;i++){
-        let char = string.charAt(i)
-        // console.log(char)
+// causes O(n²) time complexity, because indexOf and lastIndexOf each scan the whole string inside a loop.
+// let unRepeatedString = (string)=>{
+//      let result =""
+//     for(let i=0;i<string.length;i++){
+//         let char = string.charAt(i)
+//         // console.log(char)
        
-        if(string.indexOf(char) === string.lastIndexOf(char)){
-            result += char
-        }
-    }
-  return result
-}
+//         if(string.indexOf(char) === string.lastIndexOf(char)){
+//             result += char
+//         }
+//     }
+//   return result
+// }
+
+const unRepeatedString = (str) => {
+  const map = {};
+  let result = "";
+
+  for (const char of str) {
+    map[char] = (map[char] || 0) + 1;
+  }
+
+  for (const char of str) {
+    if (map[char] === 1) result += char;
+  }
+
+  return result;
+};
+
 
 console.log(unRepeatedString("cabcddeabe"))
 
@@ -132,32 +169,55 @@ let fibonacci = (n)=>{
 
 console.log(fibonacci(8))
 
-let doubleLetters = (string)=>{
-     let result =false;
-    for(let i=0;i<string.length;i++){
-        let char = string.charAt(i)
-        // console.log(char)
-      let lastIndex =string.lastIndexOf(char)
-        if(lastIndex == Number(string.indexOf(char))+1 ){
-            result = true
-        }
-    }
-  return result
-}
+// let doubleLetters = (string)=>{
+//      let result =false;
+//     for(let i=0;i<string.length;i++){
+//         let char = string.charAt(i)
+//         // console.log(char)
+//       let lastIndex =string.lastIndexOf(char)
+//         if(lastIndex == Number(string.indexOf(char))+1 ){
+//             result = true
+//         }
+//     }
+//   return result
+// }
+
+const doubleLetters = (str) => {
+  for (let i = 0; i < str.length - 1; i++) {
+    if (str[i] === str[i + 1]) return true;
+  }
+  return false;
+};
+
+console.log(doubleLetters("loop")); // true
+console.log(doubleLetters("orange")); // false
+console.log(doubleLetters("committee")); // true
+
 
 console.log(doubleLetters("loop"))
 
-let sharedLetters = (string1,string2)=>{
-    let count =0;
-    for (let i=0;i<string1.length;i++){
-        let char = string1.charAt(i);
+// let sharedLetters = (string1,string2)=>{
+//     let count =0;
+//     for (let i=0;i<string1.length;i++){
+//         let char = string1.charAt(i);
         
-        if(string2.includes(char)){
-            count++
-        }
-    }
-    return count
-}
+//         if(string2.includes(char)){
+//             count++
+//         }
+//     }
+//     return count
+// }
+
+const sharedLetters = (str1, str2) => {
+  const set = new Set(str2);
+  let count = 0;
+
+  for (const ch of str1) {
+    if (set.has(ch)) count++;
+  }
+  return count;
+};
+
 
 console.log(Object.entries({
   D: 1,
