@@ -196,7 +196,8 @@ console.log(doubleLetters("committee")); // true
 
 console.log(doubleLetters("loop"))
 
-// let sharedLetters = (string1,string2)=>{
+// let sharedLetters = (
+// string1,string2)=>{
 //     let count =0;
 //     for (let i=0;i<string1.length;i++){
 //         let char = string1.charAt(i);
@@ -369,7 +370,7 @@ let isPalindrome = (str)=>{
     return true
 }
 
-  console.log(isPalindrome("madam"))
+    console.log(isPalindrome("madam"))
 
 console.log(checkPalindrom("madam"))
 
@@ -407,7 +408,7 @@ Array.prototype.MyMap = function(callback){
   let arr = this
   
   for(let i=0; i,arr.length;i++){
-      arr[i] = callback(arr[i],i)
+      newArr[i] = callback(arr[i],i)
   }
   return newArr
 }
