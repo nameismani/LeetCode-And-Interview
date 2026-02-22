@@ -1,6 +1,7 @@
 
 
 // https://chatgpt.com/share/692be4d0-e974-8005-bd40-88688d0ad483
+// https://github.com/piyush-eon/dsa-with-javascript-course/tree/master
 
 let otpGen = (limit)=>{
     let digits = '0123456789';
@@ -403,6 +404,16 @@ function isPrime(number) {
 const number = 17;
 console.log(`${number} is prime:`, isPrime(number));
 
+function printPrimes(n) {
+  for (let i = 2; i <= n; i++) {
+    if (isPrime(i)) {
+      console.log(i);
+    }
+  }
+}
+
+printPrimes(20);
+
 Array.prototype.MyMap = function(callback){
   let newArr = [];
   let arr = this
@@ -613,3 +624,150 @@ fs.writeFileSync(, result);
             uploads/${req.file.originalname.replace(/\.[^/.]+$/, "")}/${req.file.originalname.replace(/\.[^/.]+$/, "") }.min${path.extname(req.file.originalname).toLowerCase()}
 
             path.join(__dirname,"uploads",req.file.originalname.replace(/\.[^/.]+$/, ""),{req.file.originalname.replace(/\.[^/.]+$/, "") })
+
+
+// Input - "India is my country"
+// Output - "Aidni si ym yrtnuoc"
+
+["India","is"] --> ["a",i,d]->["aid"]
+const reverseString = (sentence)=>{
+  const wordArr = sentence.split(" ");
+  const reversedWordArr = wordArr.map(word => word.toLowerCase().split("").reverse().join(""))
+  
+  return reversedWordArr.map((word,index)=> index===0 ? word.at(0).toUpperCase() + word.slice(1) :word).join(" ")
+}
+
+console.log(reverseString("India is my country"))
+
+
+
+// Ques 4 : Sliding Window Maximum
+// You are given an array of integers nums, there is a sliding window of size k which is
+// moving from the very left of the array to the very right.You can only see the k numbers
+// in the window. Each time the sliding window moves right by one position. For each window,
+// take the maximum element and add them to a final result array.
+
+// Input: nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+// Output: [3, 3, 5, 5, 6, 7]
+
+// Brute Force Solution
+const maxSlidingWindowNaive = function (nums, k) {
+  const result = [];
+  const n = nums.length;
+
+  for (i = 0; i <= n - k; i++) {
+    // O(n)
+    let max = nums[i];
+    for (j = 1; j < k; j++) {
+      // O(k)
+      if (nums[i + j] > max) {
+        max = nums[j + i];
+      }
+    }
+
+    result.push(max);
+  }
+
+  return result;
+};
+
+// Time Complexity - O(n*k) => O(n^2)
+// Space Complexity - O(n)
+console.log(maxSlidingWindowNaive([1, 3, -1, -3, 5, 3, 6, 7], 3));
+
+// Optimised Solution - Deque
+const maxSlidingWindowQueue = function (nums, k) {
+  const result = [];
+  const deque = [];
+
+  for (let i = 0; i < nums.length; i++) {
+    // O(n)
+    if (deque.length > 0 && deque[0] <= i - k) {
+      deque.shift();
+    }
+
+    while (deque.length > 0 && nums[deque[deque.length - 1]] < nums[i]) {
+      deque.pop();
+    }
+
+    deque.push(i);
+
+    if (i >= k - 1) {
+      result.push(nums[deque[0]]);
+    }
+  }
+
+  return result;
+};
+
+// Time Complexity - O(n)
+// Space Complexity - O(n)
+console.log(maxSlidingWindowQueue([1, 3, -1, -3, 5, 3, 6, 7], 3));
+
+
+app.get('/items', async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;  // Default page=1, limit=10
+  const offset = (page - 1) * limit;
+
+  //  try {
+  //   let sql = 'SELECT * FROM your_table WHERE 1=1';
+  //   const params = [];
+
+  //   if (category) {
+  //     sql += ' AND category = ?';
+  //     params.push(category);
+  //   }
+
+  //   sql += ' LIMIT ? OFFSET ?';
+  //   params.push(Number(limit), Number(offset));
+
+  //   const [rows] = await db.query(sql, params);
+  //   res.json(rows);
+  // } catch (error) {
+  //   res.status(500).send('Error fetching data');
+  // }
+
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM your_table LIMIT ? OFFSET ?',
+      [Number(limit), Number(offset)]
+    );
+    res.json(rows);
+  } catch (error) {
+    res.status(500).send('Error fetching data');
+  }
+});
+
+app.get('/items', async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;  // Default page=1, limit=10
+
+  try {
+//  try {
+//     const filter = {};
+
+//     if (category) {
+//       filter.category = category;
+//     }
+
+//     const items = await db
+//       .collection('your_collection')
+//       .find(filter)
+//       .skip((page - 1) * limit)
+//       .limit(Number(limit))
+//       .toArray();
+
+//     res.json(items);
+//   } catch (error) {
+//     res.status(500).send('Error fetching data');
+//   }
+    const items = await db.collection('your_collection')
+      .find()
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .toArray();
+    
+    res.json(items);
+  } catch (error) {
+    res.status(500).send('Error fetching data');
+  }
+});

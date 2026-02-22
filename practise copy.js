@@ -64,6 +64,48 @@ const twoSum2 = (nums, target) => {
 };
 console.log(twoSum2([2, 7, 11, 15], 9));
 
+const threeSum = (nums, target) => {
+  for (let i = 0; i < nums.length - 2; i++) {
+    const map = {};
+
+    for (let j = i + 1; j < nums.length; j++) {
+      const complement = target - nums[i] - nums[j];
+
+      if (map[complement] >= 0) {
+        return [i, map[complement], j];
+      }
+
+      map[nums[j]] = j;
+    }
+  }
+
+  return null;
+};
+
+console.log(threeSum([2, 7, 11, 15], 20));
+
+const threeSum = (nums, target) => {
+  const result = [];
+
+  for (let i = 0; i < nums.length - 2; i++) {
+    const map = {};
+
+    for (let j = i + 1; j < nums.length; j++) {
+      const complement = target - nums[i] - nums[j];
+
+      if (map[complement] !== undefined) {
+        result.push([i, map[complement], j]);
+      }
+
+      map[nums[j]] = j;
+    }
+  }
+
+  return result.length ? result : null;
+};
+
+console.log(threeSum([2, 7, 11, 15, 9, 8, 3], 20));
+
 // const maxProfit2 = (prices) => {
 //   let globalProfit = 0;
 //   for (let i = 0; i < prices.length - 1; i++) {
@@ -157,3 +199,20 @@ function maxSubArray(nums) {
   // };
 }
 console.log(maxSubArray([5, 4, -1, 7, 8]));
+
+a = 5;
+
+const obj = {
+  a: 10,
+  printA: function () {
+    a = 2;
+    console.log(this.a);
+  },
+};
+
+obj.printA();
+const fn = obj.printA;
+fn();
+
+obj.printA.call(this);
+obj.printA.bind(this);
