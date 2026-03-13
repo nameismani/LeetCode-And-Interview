@@ -159,7 +159,7 @@ const rotateArr = (arr, k) => {
   return arr;
 };
 
-console.log(rotateArr([1, 2, 3, 4, 5, 6, 7], 3));
+console.log(rotateArr());
 
 const removeUnique = (arr) => {
   for (let i = 0; i < arr.length - 1; i++) {

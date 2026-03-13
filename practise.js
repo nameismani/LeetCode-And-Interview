@@ -1,7 +1,9 @@
 
 
 // https://chatgpt.com/share/692be4d0-e974-8005-bd40-88688d0ad483
+// https://chatgpt.com/share/69b3a358-2d54-8005-b07c-825d97acfa78
 // https://github.com/piyush-eon/dsa-with-javascript-course/tree/master
+
 
 let otpGen = (limit)=>{
     let digits = '0123456789';
@@ -14,6 +16,7 @@ let otpGen = (limit)=>{
 }
 
 console.log(otpGen(20))
+
 
 countTrue([true, false, false, true, false]) ➞ 2
 
@@ -170,6 +173,25 @@ let fibonacci = (n)=>{
 
 console.log(fibonacci(8))
 
+const fibanRecursion = (n) => {
+    if (n < 2) return n;
+    return fibanRecursion(n - 1) + fibanRecursion(n - 2);
+}
+
+console.log(fibanRecursion(6)); // Output: 8
+
+const fibanArray = (n, arr = [0, 1]) => {
+    // Base case: if n is already in the array, return the array
+    if (arr.length > n) return arr.slice(0, n + 1);
+
+    // Recursive case: push the next Fibonacci number to the array
+    arr.push(arr[arr.length - 1] + arr[arr.length - 2]);
+
+    // Continue the recursion until we reach the nth Fibonacci number
+    return fibanArray(n, arr);
+}
+
+console.log(fibanArray(6)); // Output: [0, 1, 1, 2, 3, 5, 8]
 // let doubleLetters = (string)=>{
 //      let result =false;
 //     for(let i=0;i<string.length;i++){
@@ -196,6 +218,23 @@ console.log(doubleLetters("committee")); // true
 
 
 console.log(doubleLetters("loop"))
+
+const compressedLetter = (str)=>{
+    let result = ""
+    let count = 1
+    for(let i=1; i<=str.length;i++){
+        
+        if(str.at(i) === str.at(i-1)){
+            count++
+        }else{
+            result += str.at(i-1) + count
+            count = 1
+        }
+    }
+    return result
+}
+
+console.log(compressedLetter("aaabbccde")) //a3b2c2d1e1
 
 // let sharedLetters = (
 // string1,string2)=>{
@@ -327,7 +366,18 @@ let factorial = (n)=>{
   }
 }
 
+
 console.log(factorial(7))
+
+const factorial = (n) => {
+let result = 1
+for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+console.log(factorial(2)); // Output: 120
 
 let findLongestWord = (sentence)=>{
   let wordsArr = sentence.split(" ");
@@ -533,6 +583,60 @@ const deepFlatenArr = (arr)=>{
 
 console.log(deepFlatenArr([1,[2,3,[4,5,[6,7]]]]))
 
+const moveZeros = (arr)=>{
+    let pos = 0;
+    
+    for(let i=0;i<arr.length;i++){
+        if(arr.at(i) !==0){
+            const temp = arr[pos];
+            arr[pos] = arr[i]
+            arr[i] = temp
+            
+            pos++
+        }
+    }
+    
+    return arr
+}
+
+console.log(moveZeros([0,1,0,3,1,2]))
+
+function decodeString(s) {
+  let stack = [];
+  let currentNum = 0;
+  let currentStr = "";
+
+  for (let char of s) {
+    
+    if (!isNaN(char)) {
+      currentNum = currentNum * 10 + Number(char);
+    } 
+    
+    else if (char === "[") {
+      stack.push(currentStr);
+      stack.push(currentNum);
+      currentStr = "";
+      currentNum = 0;
+    } 
+    
+    else if (char === "]") {
+      let num = stack.pop();
+      let prevStr = stack.pop();
+      currentStr = prevStr + currentStr.repeat(num);
+    } 
+    
+    else {
+      currentStr += char;
+    }
+  }
+
+  return currentStr;
+}
+
+console.log(decodeString("2[c]"));      // cc
+console.log(decodeString("3[acc]"));    // accaccacc
+console.log(decodeString("3[a2[c]]"));  // accaccacc
+
   function chuckleMaster(){
     return "I'm the stand-up"
 }
@@ -561,7 +665,8 @@ const sortedData = (arr1, arr2) => {
   let array1 = arr1[0];
   let array2 = arr2[0];
   let mergedArray = [];
-  while (array1 || array2) {
+  while (array1 ||
+     array2) {
     if (array2 === undefined || array1 < array2) {
       mergedArray.push(array1);
       array1 = arr1[i];
@@ -771,3 +876,47 @@ app.get('/items', async (req, res) => {
     res.status(500).send('Error fetching data');
   }
 });
+
+
+const apiResponse = (count)=>{
+    return new Promise((resolve,reject)=>{
+        const statusCode = 200;
+        
+      setTimeout(()=> {
+            if(count == 1){
+            resolve({
+                message:"api is successfull"
+            })
+        }else{
+            reject("Api is Failed")
+        }
+      },1000)
+    })
+}
+
+
+const retry = async(cb,retries)=>{
+try{
+ return await cb(retries)
+}catch(err){
+    if (retries ) {
+      console.log(`Retrying... ${retries} left`);
+      // Wait for the delay (use setTimeout wrapped in a Promise)
+    //   await new Promise(resolve => setTimeout(resolve, delay));
+      // Retry the function recursively with one less retry
+     return retry(cb, retries - 1);
+    } else {
+      // If no retries left, reject with error
+      throw "Max retries reached. " + err;
+    }
+}
+}
+
+retry(()=>  fetch("https://dummyjson.com/products"),3).then(res => res.json()).then(res => console.log(res)).then(res => console.log(res,"asf")).catch(err=> console.log(err,"ds"))
+
+
+
+let val1;
+let val2 = null
+
+console.log(val1,val2)  //undefined null
