@@ -1,0 +1,229 @@
+Yes, there are multiple ways to implement a search function like this. I'll provide some alternative approaches to achieve the same goal but using different strategies.
+
+### 1. **Using a Stack (Iterative Approach)**
+
+Instead of recursion, you can use an iterative approach by using a stack. This can sometimes be more memory-efficient, especially for deep nested structures.
+
+```javascript
+const data = [
+    {
+        name: "Vikram Vedha",
+        movie: {
+            name: "Natpe Thunai",
+            movie: {
+                name: "PT Sir",
+                movie: {
+                    name: "Meesaya Muruku",
+                    movie: {
+                        name: "Appspamtestmovie 3"
+                    }
+                }
+            },
+        }
+    }
+];
+
+const searchMoviesIterative = (data, searchQuery) => {
+    const matchingMovies = [];
+    const stack = [...data]; // Initialize stack with the root movies array.
+
+    while (stack.length > 0) {
+        const val = stack.pop(); // Pop an item from the stack
+
+        // If the movie name matches the search query, add it to the results
+        if (val.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+            matchingMovies.push(val.name);
+        }
+
+        // If the "movie" property exists and is an object, push it onto the stack for later processing
+        if (val.movie && typeof val.movie === 'object') {
+            stack.push(val.movie);
+        }
+    }
+
+    return matchingMovies;
+};
+
+const searchQuery = "thunai";
+console.log(searchMoviesIterative(data, searchQuery)); // Output: ["Vikram Vedha", "Natpe Thunai"]
+```
+
+### Explanation:
+
+* **Stack-based Iteration**: We start with the root `data` array and iterate through it. When we encounter a nested `movie` property, we push it onto the stack. The loop continues until there are no more items in the stack.
+* **Efficiency**: This approach doesn't use the call stack like recursion does, which can be more efficient for large or deeply nested structures.
+
+### 2. **Using a Flattening Step First (Non-Recursive)**
+
+You could flatten the movie structure into a single list of movies first, and then perform the search on the flattened structure. This reduces the complexity of the search to a simple filter operation.
+
+```javascript
+const data = [
+    {
+        name: "Vikram Vedha",
+        movie: {
+            name: "Natpe Thunai",
+            movie: {
+                name: "PT Sir",
+                movie: {
+                    name: "Meesaya Muruku",
+                    movie: {
+                        name: "Appspamtestmovie 3"
+                    }
+                }
+            },
+        }
+    }
+];
+
+const flattenMovies = (data) => {
+    const flatMovies = [];
+
+    // Flatten the movie structure iteratively
+    const stack = [...data];
+    while (stack.length > 0) {
+        const val = stack.pop();
+        flatMovies.push(val.name);
+        
+        // If there's a nested movie, add it to the stack
+        if (val.movie && typeof val.movie === 'object') {
+            stack.push(val.movie);
+        }
+    }
+
+    return flatMovies;
+};
+
+const searchMovies = (flatMovies, searchQuery) => {
+    return flatMovies.filter(movie => movie.toLowerCase().includes(searchQuery.toLowerCase()));
+};
+
+// First flatten the data
+const flatMovies = flattenMovies(data);
+
+// Then search the flattened array
+const searchQuery = "thunai";
+console.log(searchMovies(flatMovies, searchQuery)); // Output: ["Vikram Vedha", "Natpe Thunai"]
+```
+
+### Explanation:
+
+* **Flattening First**: First, we use a stack to flatten the entire nested structure into a single array of movie names.
+* **Search**: Once flattened, searching becomes just a simple filter operation over the `flatMovies` array.
+
+This approach makes the search part very simple but comes with an upfront cost of flattening the structure first.
+
+### 3. **Using a Queue (Breadth-First Search)**
+
+If you want to use a breadth-first search (BFS) instead of a depth-first search (DFS), you can implement this with a queue.
+
+```javascript
+const data = [
+    {
+        name: "Vikram Vedha",
+        movie: {
+            name: "Natpe Thunai",
+            movie: {
+                name: "PT Sir",
+                movie: {
+                    name: "Meesaya Muruku",
+                    movie: {
+                        name: "Appspamtestmovie 3"
+                    }
+                }
+            },
+        }
+    }
+];
+
+const searchMoviesBFS = (data, searchQuery) => {
+    const matchingMovies = [];
+    const queue = [...data]; // Initialize queue with the root movies array
+
+    while (queue.length > 0) {
+        const val = queue.shift(); // Pop an item from the front of the queue
+
+        // If the movie name matches the search query, add it to the results
+        if (val.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+            matchingMovies.push(val.name);
+        }
+
+        // If the "movie" property exists and is an object, add it to the queue for later processing
+        if (val.movie && typeof val.movie === 'object') {
+            queue.push(val.movie);
+        }
+    }
+
+    return matchingMovies;
+};
+
+const searchQuery = "thunai";
+console.log(searchMoviesBFS(data, searchQuery)); // Output: ["Vikram Vedha", "Natpe Thunai"]
+```
+
+### Explanation:
+
+* **Queue-based Iteration**: This is similar to the stack approach, but instead of LIFO (Last In First Out), it uses FIFO (First In First Out). This approach will process the nodes level by level (breadth-first) rather than going deep first.
+* **Efficiency**: The difference in BFS is mainly in how the nodes are processed.
+
+### 4. **Using `reduce` for Flattening and Searching Simultaneously**
+
+Another option is to use `Array.reduce()` to both flatten the structure and search in one pass. This reduces the number of loops needed.
+
+```javascript
+const data = [
+    {
+        name: "Vikram Vedha",
+        movie: {
+            name: "Natpe Thunai",
+            movie: {
+                name: "PT Sir",
+                movie: {
+                    name: "Meesaya Muruku",
+                    movie: {
+                        name: "Appspamtestmovie 3"
+                    }
+                }
+            },
+        }
+    }
+];
+
+const searchMoviesReduce = (data, searchQuery) => {
+    return data.reduce((matchingMovies, val) => {
+        // If the movie name matches, add it to the result array
+        if (val.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+            matchingMovies.push(val.name);
+        }
+
+        // If there's a nested "movie", recurse into it
+        if (val.movie && typeof val.movie === 'object') {
+            matchingMovies.push(...searchMoviesReduce([val.movie], searchQuery));
+        }
+
+        return matchingMovies;
+    }, []); // Start with an empty array
+};
+
+const searchQuery = "thunai";
+console.log(searchMoviesReduce(data, searchQuery)); // Output: ["Vikram Vedha", "Natpe Thunai"]
+```
+
+### Explanation:
+
+* **`reduce`**: This is a more functional approach where you accumulate the results into an array using the `reduce()` function.
+* **Recursive search**: The recursion still happens, but this time it's handled within the `reduce` accumulator.
+
+---
+
+### Summary of Different Approaches:
+
+1. **Recursive Approach** (original): Elegant and easy to understand but can be memory-heavy for deep structures.
+2. **Stack (Iterative) Approach**: Avoids recursion and may be more efficient for deeply nested data.
+3. **Flattening First**: Makes searching easier but adds the overhead of flattening the entire structure first.
+4. **Queue (BFS)**: Processes data level by level, useful for scenarios where you care about breadth-first traversal.
+5. **Using `reduce`**: Functional, concise, and allows flattening and searching in one pass.
+
+Each of these methods has its advantages, depending on your use case (depth of nesting, memory constraints, etc.).
+
+Let me know which one you prefer or if you'd like further details!

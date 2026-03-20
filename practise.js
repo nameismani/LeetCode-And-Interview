@@ -236,6 +236,30 @@ const compressedLetter = (str)=>{
 
 console.log(compressedLetter("aaabbccde")) //a3b2c2d1e1
 
+const uncompressLetter = (str) => {
+    let result = "";
+    let i = 0;
+
+    while (i < str.length) {
+        let char = str[i];  // Get the character
+        let count = "";
+
+        // Collect the number part (the count)
+        i++;
+        while (i < str.length && !isNaN(str[i])) {
+            count += str[i];
+            i++;
+        }
+
+        // Append the character to the result the number of times specified by 'count'
+        result += char.repeat(Number(count));
+    }
+
+    return result;
+}
+
+console.log(uncompressLetter("a3b2c2d1e1"));  // "aaabbccde"
+
 // let sharedLetters = (
 // string1,string2)=>{
 //     let count =0;
@@ -920,3 +944,16 @@ let val1;
 let val2 = null
 
 console.log(val1,val2)  //undefined null
+
+const closureEg = ()=>{
+  let count = 0;
+
+  return function (){
+    return count++
+  }
+}
+
+const countClouser = closureEg()
+
+console.log(countClouser())
+console.log(countClouser())

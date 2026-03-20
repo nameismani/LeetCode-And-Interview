@@ -1,0 +1,96 @@
+Ah! Uploading **large files (1–2 GB)** to a server requires careful handling because typical web forms or API endpoints can choke on such big payloads. Here’s a detailed approach, especially in a **MERN stack / Node.js** context.
+
+---
+
+## **1. Use Streaming Instead of Loading Entire File in Memory**
+
+* Node.js can stream data from the client to the server instead of keeping the whole file in RAM.
+* Libraries like **`multer`** or **`busboy`** support streaming file uploads.
+
+**Example using `multer` with disk storage**:
+
+```js
+const express = require("express");
+const multer = require("multer");
+
+const app = express();
+
+// Save uploaded files directly to disk
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, file.originalname),
+});
+
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 * 1024 } }); // 2 GB limit
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  res.send("File uploaded successfully!");
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
+```
+
+✅ **Key point:** We never load the full file into memory—Multer writes it to disk as it streams in.
+
+---
+
+## **2. Split the File into Chunks (Optional but Recommended for 1–2 GB)**
+
+* For very large files, **chunked uploads** are safer.
+* Client splits the file into smaller parts (e.g., 5–10 MB each) and uploads them sequentially or in parallel.
+* Server receives chunks and merges them once all are uploaded.
+
+**Benefits:**
+
+* Resumable uploads if connection drops.
+* Prevents memory exhaustion on server.
+
+Libraries for chunked uploads:
+
+* **Frontend:** `react-dropzone`, `resumable.js`
+* **Backend:** `multer-chunked`, custom Node.js streaming code
+
+---
+
+## **3. Increase Server and Client Limits**
+
+* **Express default limit:** `express.json()` or `express.urlencoded()` has a default limit (~100kb). For large files:
+
+```js
+app.use(express.json({ limit: "5gb" }));
+app.use(express.urlencoded({ limit: "5gb", extended: true }));
+```
+
+* **NGINX / Apache**: If you’re behind a web server, increase `client_max_body_size` (NGINX) or `LimitRequestBody` (Apache).
+
+---
+
+## **4. Consider Cloud Storage**
+
+For really large files, it’s often better to **stream directly to S3 / GCP / Azure** instead of storing on your own server:
+
+* Generate a **pre-signed URL** from your backend.
+* Client uploads the file directly to S3.
+* Server only stores metadata.
+
+**Benefits:**
+
+* Offloads storage and bandwidth.
+* Highly scalable.
+* Supports multi-GB files without server crashes.
+
+---
+
+## **5. Tips for Uploading 1–2 GB Files**
+
+1. **Use streaming** to avoid memory overload.
+2. **Set proper file size limits** in backend and frontend.
+3. **Support chunked/resumable uploads** to handle network failures.
+4. **Use cloud storage** for production-scale uploads.
+5. **Monitor server CPU/memory usage** during upload to avoid crashes.
+
+---
+
+If you want, I can write a **full working MERN example** where the **React frontend uploads a 2 GB file in chunks** and the **Node.js backend merges it**, ready for AWS deployment. This is exactly how production apps do it.
+
+Do you want me to do that?
