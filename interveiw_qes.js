@@ -158,3 +158,18 @@ console.log(longestCommonPrefix(["dog", "racecar", "car"]));
 // Compare it with the other words.
 
 // Remove the last character of the prefix until it matches.
+
+// Time Complexity Growth (small → large)
+
+// O(1)       ── constant
+// O(log n)   ── logarithmic
+// O(n)       ── linear
+// O(n·m²)    ── linear to cubic depending on m:
+//                - If m is small, ~ O(n)
+//                - If m ~ sqrt(n), ~ O(n²)
+//                - If m ~ n, ~ O(n³)
+// O(n log n) ── linearithmic
+// O(n²)      ── quadratic
+// O(n³)      ── cubic
+// O(2^n)     ── exponential
+// O(n!)      ── factorial

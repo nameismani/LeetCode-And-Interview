@@ -12,6 +12,8 @@ let otpGen = (limit)=>{
     for(let i=0 ; i<limit; i++){
         result  += digits[Math.floor(Math.random()*10)]
     }
+
+    
     return result
 }
 
@@ -180,11 +182,31 @@ const fibanRecursion = (n) => {
 
 console.log(fibanRecursion(6)); // Output: 8
 
+function climbStairs(n) {
+    if (n < 2) return n;
+
+    let prev1 = 1, prev2 = 1;
+
+    for (let i = 2; i <= n; i++) {
+        let current = prev1 + prev2;
+        prev1 = prev2;
+        prev2 = current;
+    }
+
+    return prev2;
+}
+
+console.log(climbStairs(1)); // Output: 1
+console.log(climbStairs(2)); // Output: 2
+console.log(climbStairs(3)); // Output: 3
+console.log(climbStairs(5)); // Output: 8
+
 const fibanArray = (n, arr = [0, 1]) => {
     // Base case: if n is already in the array, return the array
     if (arr.length > n) return arr.slice(0, n + 1);
 
     // Recursive case: push the next Fibonacci number to the array
+    
     arr.push(arr[arr.length - 1] + arr[arr.length - 2]);
 
     // Continue the recursion until we reach the nth Fibonacci number
