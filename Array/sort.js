@@ -220,3 +220,38 @@ function pivot(arr, start = 0, end = arr.length - 1) {
   swap(arr, start, swapIdx);
   return swapIdx;
 }
+
+// Dutch National Flag Algorithm (Single Pass)This method uses three pointers (low, mid, and high) to partition the array in a single traversal.
+
+/**
+ * Sorts an array of 0s, 1s, and 2s in-place in O(n) time.
+ * @param {number[]} arr
+ */
+function sort012(arr) {
+  let low = 0;
+  let mid = 0;
+  let high = arr.length - 1;
+
+  while (mid <= high) {
+    if (arr[mid] === 0) {
+      // Swap current element with low pointer element
+      [arr[low], arr[mid]] = [arr[mid], arr[low]];
+      low++;
+      mid++;
+    } else if (arr[mid] === 1) {
+      // 1 is in the correct middle section, just move mid
+      mid++;
+    } else if (arr[mid] === 2) {
+      // Swap current element with high pointer element
+      [arr[high], arr[mid]] = [arr[mid], arr[high]];
+      // Do NOT increment mid here because the swapped
+      // element from high hasn't been checked yet.
+      high--;
+    }
+  }
+  return arr;
+}
+
+// Example usage:
+const nums = [2, 0, 1, 2, 1, 0];
+console.log(sort012(nums)); // [0, 0, 1, 1, 2, 2]

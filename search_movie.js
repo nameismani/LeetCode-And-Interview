@@ -104,3 +104,42 @@ const subArray = (nums, k) => {
 console.log(subArray([1, 2, 3], 3)); // Output: 2
 
 console.log(subArray([1, 1, 1], 2)); // Output: 2
+
+// You are given a list of async tasks.
+// Each task is a function that returns a Promise.
+// Write a function:
+// runWithLimit(tasks, limit)
+// that runs the tasks with a maximum of limit tasks running at the same time.
+// When one task finishes, the next task should start.
+// The function should return a Promise that resolves with results in order.
+
+// Example Input
+const tasks = [
+  () => new Promise((res) => setTimeout(() => res(1), 1000)),
+
+  () => new Promise((res) => setTimeout(() => res(2), 500)),
+
+  () => new Promise((res) => setTimeout(() => res(3), 300)),
+
+  () => new Promise((res) => setTimeout(() => res(4), 400)),
+];
+// runWithLimit(tasks, 2).then(console.log);
+// Expected Output
+// [1, 2, 3, 4]
+// But only 2 tasks run at a time.
+
+const runWithLimit = async (tasks, limit) => {
+  let ongoingTasks = 0;
+  const result = [];
+  while (ongoingTasks !== tasks.length) {
+    const parlelTasks = await Promise.all(
+      tasks.slice(ongoingTasks, ongoingTasks + limit).map((fn) => fn()),
+    ); 
+    result.push(...parlelTasks);
+    // console.log(parlelTasks,ongoingTasks)
+    ongoingTasks += limit;
+  }
+
+  return result;
+};
+runWithLimit(tasks, 2).then((res) => console.log(res));
